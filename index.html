@@ -410,6 +410,190 @@
     .holiday-banner strong { display: block; margin: 0 auto 0.3rem; }
   }
 
+  /* ====== Monthly Calendar (月間診療予定) ====== */
+  .monthly-section {
+    background: var(--bg);
+    padding: 7rem 3rem;
+  }
+  .monthly-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .monthly-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  .monthly-nav-btn {
+    background: white;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .monthly-nav-btn:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .monthly-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .monthly-nav-btn:disabled:hover {
+    background: white;
+    color: var(--ink-soft);
+    border-color: var(--line);
+  }
+  .monthly-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-align: center;
+    min-width: 220px;
+  }
+  .monthly-title-en {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--ink-mute);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    margin-top: 0.3rem;
+  }
+
+  .monthly-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: white;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.1);
+  }
+  .monthly-dayhead {
+    padding: 1rem 0.3rem;
+    text-align: center;
+    background: var(--bg-alt);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .monthly-dayhead.sun { color: #b0847c; }
+  .monthly-dayhead.sat { color: #6b8eaa; }
+
+  .monthly-cell {
+    aspect-ratio: 1 / 1;
+    padding: 0.6rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    background: white;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .monthly-cell:nth-child(7n) { border-right: none; }
+  .monthly-cell.empty {
+    background: var(--bg);
+  }
+  .monthly-cell.today {
+    background: rgba(107, 142, 127, 0.08);
+  }
+  .monthly-cell.today::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1.5px solid var(--accent);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .monthly-cell.holiday {
+    background: #fafaf6;
+  }
+  .monthly-cell.temp-holiday {
+    background: rgba(176, 132, 124, 0.1);
+  }
+
+  .monthly-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+  }
+  .monthly-cell.holiday .monthly-date { color: var(--ink-mute); }
+  .monthly-cell.temp-holiday .monthly-date { color: #8a5d55; font-weight: 500; }
+  .monthly-cell.sun .monthly-date { color: #b0847c; }
+  .monthly-cell.sat .monthly-date { color: #6b8eaa; }
+
+  .monthly-mark {
+    font-size: 0.8rem;
+    align-self: flex-end;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .monthly-cell.holiday .monthly-mark { color: var(--ink-mute); font-size: 0.7rem; }
+  .monthly-cell.temp-holiday .monthly-mark { color: #b0847c; font-weight: 600; }
+
+  .monthly-reason {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.6rem;
+    color: #8a5d55;
+    line-height: 1.3;
+    margin-top: 0.2rem;
+    word-break: break-all;
+  }
+
+  /* 凡例 */
+  .monthly-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  .monthly-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .monthly-legend-mark {
+    width: 16px; height: 16px;
+    border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+  .monthly-legend-mark.normal { background: white; }
+  .monthly-legend-mark.holiday { background: #fafaf6; }
+  .monthly-legend-mark.temp { background: rgba(176, 132, 124, 0.2); border-color: #b0847c; }
+  .monthly-legend-mark.today { background: rgba(107, 142, 127, 0.15); border-color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .monthly-section { padding: 4rem 1rem; }
+    .monthly-header { gap: 1rem; }
+    .monthly-title { font-size: 1.1rem; min-width: auto; }
+    .monthly-cell { padding: 0.3rem; }
+    .monthly-date { font-size: 0.85rem; }
+    .monthly-mark { font-size: 0.7rem; }
+    .monthly-reason { font-size: 0.55rem; }
+    .monthly-dayhead { font-size: 0.7rem; padding: 0.5rem 0.1rem; }
+    .monthly-legend { gap: 1rem; font-size: 0.7rem; }
+  }
+
   .status-hours-line {
     display: flex;
     justify-content: space-between;
@@ -1329,6 +1513,46 @@
       </iframe>
     </div>
   </div>
+
+  <!-- 月間診療予定カレンダー -->
+  <div class="monthly-inner" style="margin-top: 5rem;">
+    <div class="monthly-header">
+      <button class="monthly-nav-btn" id="monthlyPrev" aria-label="前月">‹</button>
+      <div class="monthly-title" id="monthlyTitle">
+        2026年5月
+        <span class="monthly-title-en" id="monthlyTitleEn">May 2026</span>
+      </div>
+      <button class="monthly-nav-btn" id="monthlyNext" aria-label="翌月">›</button>
+    </div>
+    <div class="monthly-grid" id="monthlyGrid">
+      <div class="monthly-dayhead sun">SUN</div>
+      <div class="monthly-dayhead">MON</div>
+      <div class="monthly-dayhead">TUE</div>
+      <div class="monthly-dayhead">WED</div>
+      <div class="monthly-dayhead">THU</div>
+      <div class="monthly-dayhead">FRI</div>
+      <div class="monthly-dayhead sat">SAT</div>
+      <!-- 日付セルはJSで動的生成 -->
+    </div>
+    <div class="monthly-legend">
+      <div class="monthly-legend-item">
+        <span class="monthly-legend-mark normal"></span>
+        <span>診療日</span>
+      </div>
+      <div class="monthly-legend-item">
+        <span class="monthly-legend-mark holiday"></span>
+        <span>休診日</span>
+      </div>
+      <div class="monthly-legend-item">
+        <span class="monthly-legend-mark temp"></span>
+        <span>臨時休診</span>
+      </div>
+      <div class="monthly-legend-item">
+        <span class="monthly-legend-mark today"></span>
+        <span>本日</span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ========= CTA ========= -->
@@ -1439,6 +1663,7 @@
         // データ取得後に表示を更新
         buildStatus();
         checkHolidayBanner();
+        renderMonthly();
       }
     } catch (err) {
       console.warn('カレンダー取得エラー:', err);
@@ -1565,15 +1790,19 @@
       }
     }
 
-    // 週間ミニカレンダー（今後7日間の予定を反映）
+    // 週間ミニカレンダー（今週の月曜～日曜の予定を反映）
     const weekEl = document.getElementById('statusWeek');
     weekEl.innerHTML = '';
     const order = [1, 2, 3, 4, 5, 6, 0];
-    order.forEach(d => {
-      // この曜日の直近の日付を計算（今週後半の場合は来週分）
-      const daysAhead = (d - day + 7) % 7;
-      const targetDate = new Date(now);
-      targetDate.setDate(now.getDate() + daysAhead);
+    // 今週の月曜の日付を計算
+    const dayOffset = day === 0 ? -6 : 1 - day; // 日曜は-6、月曜は0、火曜は-1...
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + dayOffset);
+
+    order.forEach((d, idx) => {
+      // 月曜から数えて idx 日後
+      const targetDate = new Date(monday);
+      targetDate.setDate(monday.getDate() + idx);
       const targetDateStr = targetDate.toISOString().split('T')[0];
       const holidayOnDay = holidayEvents.find(h => h.date === targetDateStr);
 
@@ -1608,8 +1837,121 @@
     });
   }
 
+  // ===== 月間カレンダー =====
+  let monthlyViewYear = new Date().getFullYear();
+  let monthlyViewMonth = new Date().getMonth(); // 0-11
+
+  function renderMonthly() {
+    const grid = document.getElementById('monthlyGrid');
+    const title = document.getElementById('monthlyTitle');
+    const titleEn = document.getElementById('monthlyTitleEn');
+    if (!grid) return;
+
+    const monthNamesEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    // タイトル更新
+    title.innerHTML = `${monthlyViewYear}年${monthlyViewMonth + 1}月<span class="monthly-title-en" id="monthlyTitleEn">${monthNamesEn[monthlyViewMonth]} ${monthlyViewYear}</span>`;
+
+    // 既存の日付セルを削除（曜日ヘッダ7つは残す）
+    const cells = grid.querySelectorAll('.monthly-cell');
+    cells.forEach(c => c.remove());
+
+    // 月の最初の曜日と日数
+    const firstDay = new Date(monthlyViewYear, monthlyViewMonth, 1);
+    const lastDay = new Date(monthlyViewYear, monthlyViewMonth + 1, 0);
+    const startWeekday = firstDay.getDay(); // 0=日
+    const daysInMonth = lastDay.getDate();
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // 月初前の空セル
+    for (let i = 0; i < startWeekday; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'monthly-cell empty';
+      grid.appendChild(empty);
+    }
+
+    // 各日のセル
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(monthlyViewYear, monthlyViewMonth, day);
+      const dateStr = `${monthlyViewYear}-${String(monthlyViewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const weekday = date.getDay();
+      const sched = schedule[weekday];
+      const holidayOnDay = holidayEvents.find(h => h.date === dateStr);
+
+      const isToday = dateStr === todayStr;
+      let isHoliday = !sched;
+      let mark = '';
+      let extraClass = '';
+      let reasonText = '';
+
+      if (holidayOnDay) {
+        if (holidayOnDay.type === 'full') {
+          isHoliday = true;
+          mark = '臨時休診';
+        } else if (holidayOnDay.type === 'am') {
+          mark = '午前休診';
+        } else {
+          mark = '午後休診';
+        }
+        extraClass = ' temp-holiday';
+        reasonText = holidayOnDay.reason || '';
+      } else if (isHoliday) {
+        mark = '休';
+      } else if (sched && sched[2] == null) {
+        mark = '午前のみ';
+      } else {
+        mark = '●';
+      }
+
+      // 土日のクラス
+      let weekendClass = '';
+      if (weekday === 0) weekendClass = ' sun';
+      else if (weekday === 6) weekendClass = ' sat';
+
+      const cell = document.createElement('div');
+      cell.className = 'monthly-cell' + extraClass + weekendClass + (isToday ? ' today' : '') + (isHoliday && !holidayOnDay ? ' holiday' : '');
+      cell.innerHTML = `
+        <div class="monthly-date">${day}</div>
+        <div class="monthly-mark">${mark}</div>
+        ${reasonText ? `<div class="monthly-reason">${reasonText}</div>` : ''}
+      `;
+      grid.appendChild(cell);
+    }
+
+    // ナビゲーションボタンの状態
+    const prevBtn = document.getElementById('monthlyPrev');
+    const nextBtn = document.getElementById('monthlyNext');
+    if (prevBtn && nextBtn) {
+      const now = new Date();
+      const currentMonthKey = now.getFullYear() * 12 + now.getMonth();
+      const viewMonthKey = monthlyViewYear * 12 + monthlyViewMonth;
+      prevBtn.disabled = viewMonthKey <= currentMonthKey;
+      nextBtn.disabled = viewMonthKey >= currentMonthKey + 1;
+    }
+  }
+
+  // ナビボタン
+  const monthlyPrevBtn = document.getElementById('monthlyPrev');
+  const monthlyNextBtn = document.getElementById('monthlyNext');
+  if (monthlyPrevBtn) {
+    monthlyPrevBtn.addEventListener('click', () => {
+      monthlyViewMonth--;
+      if (monthlyViewMonth < 0) { monthlyViewMonth = 11; monthlyViewYear--; }
+      renderMonthly();
+    });
+  }
+  if (monthlyNextBtn) {
+    monthlyNextBtn.addEventListener('click', () => {
+      monthlyViewMonth++;
+      if (monthlyViewMonth > 11) { monthlyViewMonth = 0; monthlyViewYear++; }
+      renderMonthly();
+    });
+  }
+
   // 初回：先に通常スケジュールで表示してから、カレンダーを取りに行く
   buildStatus();
+  renderMonthly();
   fetchHolidays();
   // 1分ごとに表示更新
   setInterval(buildStatus, 60000);
