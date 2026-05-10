@@ -362,6 +362,54 @@
   .status-day.today .status-day-mark { color: var(--accent-deep); font-weight: 500; }
   .status-day.holiday .status-day-mark { color: var(--ink-mute); opacity: 0.5; }
 
+  /* 臨時休診（カレンダー連携で動的に追加されるマーク） */
+  .status-day.temp-holiday {
+    background: rgba(176, 132, 124, 0.12);
+  }
+  .status-day.temp-holiday .status-day-mark {
+    color: #b0847c;
+    font-weight: 600;
+    opacity: 1;
+  }
+  .status-day.temp-holiday .status-day-label {
+    color: #8a5d55;
+  }
+
+  /* 臨時休診バナー（ヘッダー直下にスライドダウン） */
+  .holiday-banner {
+    background: linear-gradient(135deg, #b0847c 0%, #8a5d55 100%);
+    color: white;
+    padding: 0.9rem 3rem;
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    font-family: 'Noto Serif JP', serif;
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    z-index: 99;
+    box-shadow: 0 4px 20px -8px rgba(0,0,0,0.15);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+  .holiday-banner.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .holiday-banner strong {
+    display: inline-block;
+    margin-right: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+  }
+  @media (max-width: 768px) {
+    .holiday-banner { font-size: 0.75rem; padding: 0.7rem 1rem; }
+    .holiday-banner strong { display: block; margin: 0 auto 0.3rem; }
+  }
+
   .status-hours-line {
     display: flex;
     justify-content: space-between;
@@ -909,6 +957,12 @@
   </button>
 </header>
 
+<!-- 臨時休診バナー（カレンダーから自動取得） -->
+<div class="holiday-banner" id="holidayBanner">
+  <strong>NOTICE</strong>
+  <span id="holidayBannerText"></span>
+</div>
+
 <!-- ========= HERO ========= -->
 <section class="hero">
   <div class="hero-content">
@@ -1367,6 +1421,56 @@
   const dayLabels = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const dayLabelsJa = ['日', '月', '火', '水', '木', '金', '土'];
 
+  // ===== カレンダー連携 =====
+  // Googleカレンダーから取得した臨時休診情報を保持
+  const CALENDAR_API_URL = "https://api.kudan-tanaka.com/";
+  let holidayEvents = []; // [{date: 'YYYY-MM-DD', type: 'full'|'am'|'pm', reason: '...'}]
+
+  async function fetchHolidays() {
+    try {
+      const response = await fetch(CALENDAR_API_URL);
+      if (!response.ok) {
+        console.warn('カレンダー取得に失敗しました');
+        return;
+      }
+      const data = await response.json();
+      if (Array.isArray(data.events)) {
+        holidayEvents = data.events;
+        // データ取得後に表示を更新
+        buildStatus();
+        checkHolidayBanner();
+      }
+    } catch (err) {
+      console.warn('カレンダー取得エラー:', err);
+    }
+  }
+
+  function checkHolidayBanner() {
+    const banner = document.getElementById('holidayBanner');
+    if (!banner) return;
+    const todayStr = new Date().toISOString().split('T')[0];
+    const upcoming = holidayEvents
+      .filter(h => h.date >= todayStr)
+      .sort((a, b) => a.date.localeCompare(b.date))[0];
+
+    if (!upcoming) {
+      banner.classList.remove('show');
+      return;
+    }
+
+    const text = document.getElementById('holidayBannerText');
+    const eventDate = new Date(upcoming.date + 'T00:00:00');
+    const isToday = upcoming.date === todayStr;
+    const dateLabel = isToday
+      ? '本日'
+      : `${eventDate.getMonth() + 1}月${eventDate.getDate()}日(${dayLabelsJa[eventDate.getDay()]})`;
+    const typeLabel = upcoming.type === 'full' ? '臨時休診' : (upcoming.type === 'am' ? '午前休診' : '午後休診');
+    const reasonText = upcoming.reason ? `${upcoming.reason}のため、` : '';
+
+    text.textContent = `${dateLabel}は${reasonText}${typeLabel}とさせていただきます`;
+    setTimeout(() => banner.classList.add('show'), 800);
+  }
+
   function formatHour(h) {
     if (h == null) return '';
     const hour = Math.floor(h);
@@ -1378,7 +1482,22 @@
     const now = new Date();
     const day = now.getDay();
     const hour = now.getHours() + now.getMinutes() / 60;
-    const today = schedule[day];
+    const todayDateStr = now.toISOString().split('T')[0];
+    let today = schedule[day];
+
+    // 臨時休診チェック：今日が臨時休診なら時間設定を上書き
+    const todayHoliday = holidayEvents.find(h => h.date === todayDateStr);
+    if (todayHoliday) {
+      if (todayHoliday.type === 'full') {
+        today = null; // 終日休診扱い
+      } else if (todayHoliday.type === 'am' && today) {
+        // 午前のみ休診 → 午後のみ営業
+        today = [null, null, today[2], today[3]];
+      } else if (todayHoliday.type === 'pm' && today) {
+        // 午後のみ休診 → 午前のみ営業
+        today = [today[0], today[1], null, null];
+      }
+    }
 
     const badge = document.getElementById('statusBadge');
     const label = document.getElementById('statusLabel');
@@ -1393,7 +1512,11 @@
     const RECEPTION_END_PM = 18;
 
     if (!today) {
-      detailText = '本日は休診日です';
+      if (todayHoliday) {
+        detailText = todayHoliday.reason ? `${todayHoliday.reason}のため臨時休診` : '本日は臨時休診';
+      } else {
+        detailText = '本日は休診日です';
+      }
     } else {
       const [amStart, amEnd, pmStart, pmEnd] = today;
       if (amStart != null && hour >= amStart && hour < amEnd) {
@@ -1412,7 +1535,7 @@
         }
       } else if (amStart != null && hour < amStart) {
         detailText = `本日 ${formatHour(amStart)} から`;
-      } else if (pmStart != null && hour >= amEnd && hour < pmStart) {
+      } else if (pmStart != null && hour >= (amEnd || 0) && hour < pmStart) {
         detailText = `${formatHour(pmStart)} から再開`;
       } else {
         detailText = '本日の受付は終了しました';
@@ -1421,7 +1544,13 @@
 
     badge.classList.remove('status-open', 'status-closed');
     badge.classList.add(isOpen ? 'status-open' : 'status-closed');
-    label.textContent = isOpen ? 'ただいま診療中' : '現在 診療時間外';
+
+    // 臨時休診の場合は専用ラベル
+    if (todayHoliday && !isOpen) {
+      label.textContent = '本日は臨時休診';
+    } else {
+      label.textContent = isOpen ? 'ただいま診療中' : '現在 診療時間外';
+    }
     detail.textContent = detailText;
 
     // ヘッダーのミニステータスも更新
@@ -1429,24 +1558,48 @@
     const headerText = document.getElementById('headerStatusText');
     if (headerStatus) {
       headerStatus.classList.toggle('closed', !isOpen);
-      headerText.textContent = isOpen ? `診療中 · ${detailText}` : detailText;
+      if (todayHoliday && !isOpen) {
+        headerText.textContent = '本日は臨時休診';
+      } else {
+        headerText.textContent = isOpen ? `診療中 · ${detailText}` : detailText;
+      }
     }
 
-    // 週間ミニカレンダー
+    // 週間ミニカレンダー（今後7日間の予定を反映）
     const weekEl = document.getElementById('statusWeek');
     weekEl.innerHTML = '';
-    // 月曜はじまりで並べる
     const order = [1, 2, 3, 4, 5, 6, 0];
     order.forEach(d => {
-      const sched = schedule[d];
+      // この曜日の直近の日付を計算（今週後半の場合は来週分）
+      const daysAhead = (d - day + 7) % 7;
+      const targetDate = new Date(now);
+      targetDate.setDate(now.getDate() + daysAhead);
+      const targetDateStr = targetDate.toISOString().split('T')[0];
+      const holidayOnDay = holidayEvents.find(h => h.date === targetDateStr);
+
+      let sched = schedule[d];
       const isToday = d === day;
-      const isHoliday = !sched;
+      let isHoliday = !sched;
       let mark = '●';
-      if (isHoliday) mark = '−';
-      else if (sched[2] == null) mark = '◐'; // 午前のみ
+      let extraClass = '';
+
+      if (holidayOnDay) {
+        // 臨時休診マーク
+        if (holidayOnDay.type === 'full') {
+          isHoliday = true;
+          mark = '✕';
+        } else {
+          mark = '◐';
+        }
+        extraClass = ' temp-holiday';
+      } else if (isHoliday) {
+        mark = '−';
+      } else if (sched && sched[2] == null) {
+        mark = '◐'; // 午前のみ（土曜）
+      }
 
       const cell = document.createElement('div');
-      cell.className = 'status-day' + (isToday ? ' today' : '') + (isHoliday ? ' holiday' : '');
+      cell.className = 'status-day' + (isToday ? ' today' : '') + (isHoliday ? ' holiday' : '') + extraClass;
       cell.innerHTML = `
         <div class="status-day-label">${dayLabelsJa[d]}</div>
         <div class="status-day-mark">${mark}</div>
@@ -1455,9 +1608,13 @@
     });
   }
 
+  // 初回：先に通常スケジュールで表示してから、カレンダーを取りに行く
   buildStatus();
-  // 1分ごとに更新
+  fetchHolidays();
+  // 1分ごとに表示更新
   setInterval(buildStatus, 60000);
+  // 10分ごとにカレンダーを再取得
+  setInterval(fetchHolidays, 600000);
 </script>
 
 </body>
