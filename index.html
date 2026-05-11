@@ -1813,18 +1813,20 @@
       let extraClass = '';
 
       if (holidayOnDay) {
-        // 臨時休診マーク
+        // 臨時休診マーク：営業している側が黒い半月
         if (holidayOnDay.type === 'full') {
           isHoliday = true;
           mark = '✕';
+        } else if (holidayOnDay.type === 'am') {
+          mark = '◑'; // 午前休診（午後営業=右が黒）
         } else {
-          mark = '◐';
+          mark = '◐'; // 午後休診（午前営業=左が黒）
         }
         extraClass = ' temp-holiday';
       } else if (isHoliday) {
         mark = '−';
       } else if (sched && sched[2] == null) {
-        mark = '◐'; // 午前のみ（土曜）
+        mark = '◐'; // 午前のみ営業（土曜）=左が黒
       }
 
       const cell = document.createElement('div');
