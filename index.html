@@ -830,6 +830,98 @@
   }
   .staff-card.founder .staff-role { color: var(--gold); }
 
+  /* ====== News（お知らせ） ====== */
+  .news-section {
+    background: var(--bg);
+    padding: 7rem 3rem;
+  }
+  .news-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .news-grid {
+    display: grid;
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+  .news-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 1.5rem 1.8rem;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .news-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px -15px rgba(0,0,0,0.15);
+  }
+  .news-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--ink-mute);
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    padding-top: 0.2rem;
+  }
+  .news-category {
+    display: inline-block;
+    padding: 0.25rem 0.9rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    white-space: nowrap;
+    background: var(--bg-alt);
+  }
+  .news-category.お知らせ { color: var(--accent-deep); border-color: var(--accent); background: rgba(107, 142, 127, 0.08); }
+  .news-category.休診 { color: #8a5d55; border-color: #b0847c; background: rgba(176, 132, 124, 0.1); }
+  .news-category.ブログ { color: var(--gold); border-color: var(--gold); background: rgba(180, 144, 96, 0.08); }
+  .news-content {
+    min-width: 0;
+  }
+  .news-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin: 0 0 0.4rem 0;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .news-summary {
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin: 0;
+  }
+  .news-empty {
+    text-align: center;
+    color: var(--ink-mute);
+    padding: 3rem;
+    font-family: 'Noto Serif JP', serif;
+    font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    .news-section { padding: 4rem 1rem; }
+    .news-card {
+      grid-template-columns: auto 1fr;
+      gap: 0.8rem 1rem;
+      padding: 1.2rem;
+    }
+    .news-date { grid-column: 1; grid-row: 1; }
+    .news-category { grid-column: 2; grid-row: 1; justify-self: start; }
+    .news-content { grid-column: 1 / -1; grid-row: 2; }
+    .news-title { font-size: 0.95rem; }
+    .news-summary { font-size: 0.8rem; }
+  }
+
   /* 歴史ギャラリー(大正時代の写真) */
   .heritage {
     margin-top: 6rem;
@@ -1131,7 +1223,7 @@
       <li><a href="#concept">当院について</a></li>
       <li><a href="#services">診療案内</a></li>
       <li><a href="#staff">医師紹介</a></li>
-      <li><a href="#gallery">院内の様子</a></li>
+      <li><a href="#news">お知らせ</a></li>
       <li><a href="#access">アクセス</a></li>
       <li><a href="#contact" class="nav-cta">ご予約</a></li>
     </ul>
@@ -1456,6 +1548,21 @@
   </div>
 </section>
 
+<!-- ========= NEWS ========= -->
+<section id="news" class="news-section">
+  <div class="news-inner">
+    <div class="section-head">
+      <span class="section-label">News & Topics</span>
+      <h2 class="section-title">お知らせ</h2>
+      <p>当院からのお知らせや、ブログ記事をお届けします。</p>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <!-- お知らせカードはJSで動的生成 -->
+      <div class="news-empty">読み込み中...</div>
+    </div>
+  </div>
+</section>
+
 <!-- ========= ACCESS ========= -->
 <section id="access" class="access">
   <div class="section-head">
@@ -1584,6 +1691,7 @@
         <li><a href="#concept">当院について</a></li>
         <li><a href="#services">診療案内</a></li>
         <li><a href="#staff">医師紹介</a></li>
+        <li><a href="#news">お知らせ</a></li>
         <li><a href="#info">ご利用案内</a></li>
       </ul>
     </div>
@@ -1959,6 +2067,75 @@
   setInterval(buildStatus, 60000);
   // 10分ごとにカレンダーを再取得
   setInterval(fetchHolidays, 600000);
+
+  // ===== お知らせ（Notion）=====
+  const NEWS_API_URL = "https://api.kudan-tanaka.com/news";
+
+  async function fetchNews() {
+    const grid = document.getElementById('newsGrid');
+    if (!grid) return;
+    try {
+      const response = await fetch(NEWS_API_URL);
+      if (!response.ok) {
+        grid.innerHTML = '<div class="news-empty">お知らせを読み込めませんでした</div>';
+        return;
+      }
+      const data = await response.json();
+      const items = Array.isArray(data.items) ? data.items : [];
+      renderNews(items);
+    } catch (err) {
+      console.warn('お知らせ取得エラー:', err);
+      grid.innerHTML = '<div class="news-empty">お知らせを読み込めませんでした</div>';
+    }
+  }
+
+  function renderNews(items) {
+    const grid = document.getElementById('newsGrid');
+    if (!grid) return;
+    if (items.length === 0) {
+      grid.innerHTML = '<div class="news-empty">現在、お知らせはありません</div>';
+      return;
+    }
+    grid.innerHTML = items.map(item => {
+      const dateLabel = formatNewsDate(item.date);
+      const category = item.category || 'お知らせ';
+      const title = escapeHtml(item.title || '無題');
+      const summary = escapeHtml(item.summary || '');
+      return `
+        <article class="news-card">
+          <div class="news-date">${dateLabel}</div>
+          <div class="news-category ${category}">${category}</div>
+          <div class="news-content">
+            <h3 class="news-title">${title}</h3>
+            ${summary ? `<p class="news-summary">${summary}</p>` : ''}
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
+  function formatNewsDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}.${m}.${day}`;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // 初回読み込み + 10分ごとに再取得
+  fetchNews();
+  setInterval(fetchNews, 600000);
 </script>
 
 </body>
