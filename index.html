@@ -5,9 +5,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>田中歯科医院 | 千代田区九段南の歯科・小児歯科・訪問歯科</title>
 <meta name="description" content="田中歯科医院は東京都千代田区九段南の歯科医院です。大正末期から麹町でおよそ一世紀、一般歯科と小児歯科の専属スタッフがあらゆる年齢層に対応。市ヶ谷駅徒歩5分。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kudan-tanaka.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudan-tanaka.com/">
+<meta property="og:site_name" content="田中歯科医院">
+<meta property="og:title" content="田中歯科医院 | 千代田区九段南の歯科・小児歯科・訪問歯科">
+<meta property="og:description" content="千代田区九段南・市ヶ谷駅近くの田中歯科医院。一般歯科・小児歯科・訪問歯科に対応しています。">
+<meta property="og:image" content="https://kudan-tanaka.com/images/ogp-gallery.jpg">
+<meta property="og:image:secure_url" content="https://kudan-tanaka.com/images/ogp-gallery.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="田中歯科医院 千代田区九段南の歯科医院">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="田中歯科医院 | 千代田区九段南の歯科・小児歯科・訪問歯科">
+<meta name="twitter:description" content="千代田区九段南・市ヶ谷駅近くの田中歯科医院。一般歯科・小児歯科・訪問歯科に対応しています。">
+<meta name="twitter:image" content="https://kudan-tanaka.com/images/ogp-gallery.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dentist",
+  "@id": "https://kudan-tanaka.com/#clinic",
+  "name": "田中歯科医院",
+  "alternateName": "Tanaka Dental Clinic",
+  "url": "https://kudan-tanaka.com/",
+  "image": "https://kudan-tanaka.com/images/ogp-gallery.jpg",
+  "logo": "https://kudan-tanaka.com/images/ogp-gallery.jpg",
+  "description": "田中歯科医院は東京都千代田区九段南の歯科医院です。一般歯科・小児歯科・訪問歯科に対応しています。",
+  "telephone": "+81-3-3261-6996",
+  "faxNumber": "+81-3-3222-0780",
+  "address": {
+    "@type": "PostalAddress",
+    "postalCode": "102-0074",
+    "addressRegion": "東京都",
+    "addressLocality": "千代田区",
+    "streetAddress": "九段南4-3-7",
+    "addressCountry": "JP"
+  },
+  "areaServed": [
+    "東京都千代田区",
+    "九段南",
+    "市ヶ谷",
+    "麹町"
+  ],
+  "medicalSpecialty": [
+    "Dentistry",
+    "PediatricDentistry"
+  ],
+  "availableService": [
+    {
+      "@type": "MedicalProcedure",
+      "name": "一般歯科"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "小児歯科"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "訪問歯科診療"
+    },
+    {
+      "@type": "MedicalProcedure",
+      "name": "区民歯科検診"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Friday"
+      ],
+      "opens": "10:00",
+      "closes": "13:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Friday"
+      ],
+      "opens": "14:00",
+      "closes": "18:30"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "10:00",
+      "closes": "13:00"
+    }
+  ],
+  "priceRange": "$$",
+  "hasMap": "https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%8D%83%E4%BB%A3%E7%94%B0%E5%8C%BA%E4%B9%9D%E6%AE%B5%E5%8D%974-3-7"
+}
+</script>
 <style>
   :root {
     --bg: #fbfaf7;
@@ -992,19 +1092,29 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 60%);
+    background: linear-gradient(180deg, transparent 45%, rgba(42,42,42,0.42) 100%);
   }
   .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
   .gallery-item:nth-child(2) { grid-column: span 2; }
+  .gallery-item:nth-child(3) { grid-column: span 2; }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .gallery-item:hover img { transform: scale(1.04); }
   .gallery-item-label {
     position: absolute;
     bottom: 1.5rem; left: 1.5rem;
-    color: var(--accent-deep);
+    color: white;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     letter-spacing: 0.15em;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     z-index: 2;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.35);
   }
   .gallery-item svg {
     position: absolute;
@@ -1162,6 +1272,7 @@
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .gallery-item:nth-child(1) { grid-column: span 2; }
     .gallery-item:nth-child(2) { grid-column: span 2; }
+    .gallery-item:nth-child(3) { grid-column: span 2; }
     .footer-inner { grid-template-columns: 1fr 1fr; }
   }
 
@@ -1507,43 +1618,20 @@
   <div class="section-head">
     <span class="section-label">Our Clinic</span>
     <h2 class="section-title">院内の様子</h2>
-    <p>※院内写真は準備中です。後日差し替え予定です。</p>
+    <p>落ち着いてお過ごしいただける受付と、明るい診療室をご紹介します。</p>
   </div>
   <div class="gallery-grid">
     <div class="gallery-item">
-      <svg fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 100 100">
-        <rect x="20" y="30" width="60" height="40" rx="2"/>
-        <path d="M20 50h60M50 30v40"/>
-      </svg>
-      <div class="gallery-item-label">Entrance</div>
+      <img src="images/clinic-reception.jpg" alt="田中歯科医院の受付">
+      <div class="gallery-item-label">Reception</div>
     </div>
     <div class="gallery-item">
-      <svg fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="20"/>
-        <path d="M30 50h40M50 30v40"/>
-      </svg>
-      <div class="gallery-item-label">Waiting Room</div>
-    </div>
-    <div class="gallery-item">
-      <svg fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 100 100">
-        <rect x="25" y="35" width="50" height="30" rx="4"/>
-        <circle cx="50" cy="50" r="8"/>
-      </svg>
+      <img src="images/clinic-treatment-wide.jpg" alt="田中歯科医院の診療室全景">
       <div class="gallery-item-label">Treatment Room</div>
     </div>
     <div class="gallery-item">
-      <svg fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 100 100">
-        <path d="M30 60l20-20 20 20" />
-        <rect x="35" y="60" width="30" height="15"/>
-      </svg>
-      <div class="gallery-item-label">Counseling</div>
-    </div>
-    <div class="gallery-item">
-      <svg fill="none" stroke="currentColor" stroke-width="0.8" viewBox="0 0 100 100">
-        <rect x="30" y="30" width="40" height="40"/>
-        <circle cx="50" cy="50" r="12"/>
-      </svg>
-      <div class="gallery-item-label">Sterilization</div>
+      <img src="images/clinic-treatment.jpg" alt="田中歯科医院の診療ユニット">
+      <div class="gallery-item-label">Dental Unit</div>
     </div>
   </div>
 </section>
